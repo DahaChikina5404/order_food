@@ -3,7 +3,7 @@ import { format } from "date-fns"
 import { ClockLoader } from "react-spinners"
 import { Link } from "react-router-dom"
 import { DevicePhoneMobileIcon, EnvelopeIcon, MapPinIcon } from '@heroicons/react/24/outline'
-import "./style.css"
+import './style.css'
 
 function HomePage() {
    
