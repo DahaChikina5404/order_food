@@ -13,7 +13,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<HomePage />}/>
                 <Route path="/restaurant/:slug" element={<RestaurantPage />}/>
-                <Route path="shopping" element={<ShoppingBasket />}/>
+                <Route path="/cart" element={<ShoppingBasket />}/>
             </Routes>
             <IconTrash />
             <Footer />

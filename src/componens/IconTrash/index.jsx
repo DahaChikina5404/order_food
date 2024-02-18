@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 
 function IconTrash() {
     return (
-        <Link to={`/shopping`}>
+        <Link to={`/cart`}>
             <button>
                 <ShoppingCartIcon className="h-14 w-14 fixed bottom-7 right-7"/>
             </button>
