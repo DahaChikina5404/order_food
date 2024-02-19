@@ -1,15 +1,9 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 
-function ShoppingBasket() {
+function ShoppingBasket({ items }) {
 
-    const [cartItems, setCartItems] = useState([
-        // id,
-        // image,
-        // name,
-        // price,
-        // count
-    ])
+    const [cartItems, setCartItems] = useState([])
 
 
     // const deleteOrder = (id) => {
@@ -17,7 +11,7 @@ function ShoppingBasket() {
     //     setCartItems(filteredOrder)
     // }
 
-
+   
 
 
     return (

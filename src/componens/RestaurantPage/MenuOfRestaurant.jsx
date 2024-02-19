@@ -15,6 +15,18 @@ function MenuOfRestaurant() {
         .then(data => setItems(data))
     }, [slug])
 
+    // const addOrder = (event) => {   // функция добавляет заказ в корзину
+    //     event.preventDefault()  // предотвращаем загрузку страницы
+
+    //     const cartItems = [
+    //         id,
+    //         image,
+    //         name,
+    //         price,
+    //         count
+    //     ]
+    // }
+
     return (
         <div className="content">
             {items.length === 0 ? (
@@ -38,7 +50,7 @@ function MenuOfRestaurant() {
 
                                     <button 
                                         className="p-3 w-full bg-yellow-400 text-xl rounded hover:bg-yellow-600 transition-all duration-3000"
-                                        // onClick={}
+                                       // onClick={addOrder} items={items}
                                     >
                                         Добавить в корзину
                                     </button>   
