@@ -1,6 +1,6 @@
 import Header from "componens/Header"
 import HomePage from "componens/HomePage"
-import RestaurantPage from "componens/RestaurantPage/MenuOfRestaurant"
+import RestaurantPage from "componens/RestaurantPage/Menu"
 import ShoppingBasket from "componens/ShoppingBasket"
 import IconTrash from "componens/IconTrash"
 import Footer from "componens/Footer"
