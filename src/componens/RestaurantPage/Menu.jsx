@@ -3,12 +3,14 @@ import { useParams } from "react-router-dom"
 import { ClockLoader } from "react-spinners"
 import uuid4 from "uuid4"
 import Restaurant from "./Restaurant"
-import '../HomePage/style.css'
+import ErrorModalWindow from "componens/ErrorModal"
+import "../HomePage/style.css"
 
 function Menu() {
   
     const [items, setItems] = useState([])   // МАССИВ блюд
     const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem('cartItems')) || [])  // массив блюд, добавленных в корзину
+    const [error, setError] = useState(false)  // сообщение о добавлении блюда другого рестирана в корзину
     const { slug } = useParams()
 
     useEffect(() => {  // Подгрузка данных с бэкенда
@@ -22,8 +24,13 @@ function Menu() {
 	}, [cartItems])
 
     const addOrder = (item) => {   // функция добавляет заказ в корзину
+
+        if (item.id !== cartItems.restaurantId) {  // условие, чтобы добавлять блюдо ТОЛЬКО одного ресторана
+                setError(true)     // Мальвина, вот тут затуп..... Не понимаю, куда вставить эту функцию.....
+        } 
+
         const currentCartItem = findCartItem(item)  // проверить, есть ли item в корзине cartItems
-            
+
         if (currentCartItem) {   // изменить количество +1
             const newCartItem = {
                 ...currentCartItem,
@@ -34,12 +41,13 @@ function Menu() {
             // заменяем старый на новый
             setCartItems([...newItems, newCartItem])
         } else {
-            const newCartItem = {  // добавить впервые
-                ...item,
-                id: uuid4(),
-                itemId: item.id,
-                quantity: 1
-            }
+                const newCartItem = {  // добавить впервые
+                    ...item,
+                    id: uuid4(),
+                    itemId: item.id,
+                    quantity: 1,
+                    restaurantId: item.id
+                }
             setCartItems([...cartItems, newCartItem])
         }
     }
@@ -57,25 +65,26 @@ function Menu() {
             // заменяем старый элемент на новый
             setCartItems([...newItems, newCartItem])
         }
-    }
 
-
-    // Мальвина, совсем запуталась с удалением из корзины.....
-    const deleteOrderFromMenu = (item) => {  // удаление заказ из корзины если количество = 0
-        const currentCartItem = findCartItem(item)  // проверить, есть ли item в корзине cartItems
-
-        if (currentCartItem && currentCartItem.quantity < 1) {
-            
-            // удалим старое
+        if (currentCartItem.quantity <= 1) {  // если количество меньше 1, то удалить товар из корзины
             let newItems = cartItems.filter(cartItem => cartItem.itemId !== currentCartItem.itemId)
             // заменяем старый на новый
-            setCartItems([...newItems])
+            setCartItems(newItems)
         }
     }
 
     const findCartItem = (item) => {  // проверить, есть ли item в корзине cartItems
         return cartItems.find(c => c.itemId === item.id)
     } 
+
+    const removeShoppingBasket = () => { // очистка корзины при добавлении блюда другого ресторана
+        setCartItems([])
+        setError(false)
+    }
+
+    const closeModalError = () => {  // закрытие сообщения об ошибки
+        setError(false)
+    }
 
     return (
         <div className="content">
@@ -89,6 +98,7 @@ function Menu() {
             ) : (
                 <>
                     <Restaurant />
+                    {error && <ErrorModalWindow closeModalError={closeModalError} removeShoppingBasket={removeShoppingBasket}/>}
                     <div className="gap-10 grid justify-around grid-cols-1 lg:grid-cols-3 md:grid-cols-2">
                         {items.map((item) => {
                             return (
@@ -98,7 +108,7 @@ function Menu() {
                                     <p className="text-justify">{item.description}</p>
                                     <p className="flex gap-1 text-2xl text-rose-700 italic">Цена: {item.price} р.</p>
 
-                                    {!findCartItem(item) ? (deleteOrderFromMenu() && // Хочу, чтобы при количестве м-е 1, кнопка "Добавить в корзину" опять показывалась
+                                    {!findCartItem(item) ? (
                                     <button 
                                         className="p-3 w-full bg-yellow-400 text-xl rounded hover:bg-yellow-600 transition-all duration-3000"
                                         onClick={() => addOrder(item)}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import { DevicePhoneMobileIcon, EnvelopeIcon, MapPinIcon } from '@heroicons/react/24/outline'
+import { DevicePhoneMobileIcon, EnvelopeIcon, MapPinIcon } from "@heroicons/react/24/outline"
 
 function Restaurant() {
   

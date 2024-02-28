@@ -1,4 +1,4 @@
-import { DevicePhoneMobileIcon, EnvelopeIcon } from '@heroicons/react/24/outline'
+import { DevicePhoneMobileIcon, EnvelopeIcon } from "@heroicons/react/24/outline"
 
 function Footer() {
     return (
