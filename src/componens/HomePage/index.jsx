@@ -1,20 +1,11 @@
-import { useState, useEffect } from "react"
 import { format } from "date-fns"
 import { ClockLoader } from "react-spinners"
 import { Link } from "react-router-dom"
 import { DevicePhoneMobileIcon, EnvelopeIcon, MapPinIcon } from "@heroicons/react/24/outline"
 import "./style.css"
 
-function HomePage() {
+function HomePage({ restaurants }) {
    
-    const [restaurants, setRestaurants] = useState([])   // МАССИВ ресторанов
-
-    useEffect(() => {  // Подгрузка данных с бэкенда
-        fetch(`https://www.bit-by-bit.ru/api/student-projects/restaurants`)
-        .then(response => response.json())
-        .then(data => setRestaurants(data))
-    }, [])
-
     return (
         <div className="content">
             {restaurants.length === 0 ? (
@@ -36,9 +27,9 @@ function HomePage() {
                                 <div className="flex flex-col justify-between gap-3">
                                     <p className="text-justify">{restaurant.description}</p>
 
-                                    <div className="flex gap-1 text-2xl text-rose-700 italic">
+                                    <div className="flex gap-1 text-xl text-rose-700 italic">
                                         <p>Время работы:</p>
-                                        <p>{format(restaurant.openAt, 'hh:mm')} - {format(restaurant.closeAt, 'hh:mm')}</p>
+                                        <p>{format(restaurant.openAt, 'hh:mm aaa')} - {format(restaurant.closeAt, 'hh:mm aaa')}</p>
                                     </div>
                                 
                                     <div className="text-justify text-sm md:text-xl">

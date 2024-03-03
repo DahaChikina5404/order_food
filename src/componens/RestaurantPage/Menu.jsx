@@ -23,13 +23,24 @@ function Menu() {
 		localStorage.setItem('cartItems', JSON.stringify(cartItems))
 	}, [cartItems])
 
-    const addOrder = (item) => {   // функция добавляет заказ в корзину
-
-        if (item.id !== cartItems.restaurantId) {  // условие, чтобы добавлять блюдо ТОЛЬКО одного ресторана
-                setError(true)     // Мальвина, вот тут затуп..... Не понимаю, куда вставить эту функцию.....
-        } 
-
+    const addOrder = (item, currentRestaurantId) => {   // функция добавляет заказ в корзину
         const currentCartItem = findCartItem(item)  // проверить, есть ли item в корзине cartItems
+
+        if (!currentCartItem) {  // условие, чтобы добавлять блюдо ТОЛЬКО одного ресторана
+            let itemFromOther = false  // блюда из другого ресторана
+
+            for (let i = 0; i < cartItems.length; i++) { // проходим по всей корзине и проверяем является ли каждый эл-т клозины из одного и того же ресторана
+                const cartItem = cartItems[i]
+                if (cartItem.restaurantId !== currentRestaurantId && cartItem.quantity > 0) {
+                    itemFromOther = true
+                    break
+                }
+            }
+            if (itemFromOther) {
+                setError(true)
+                return
+            }
+        } 
 
         if (currentCartItem) {   // изменить количество +1
             const newCartItem = {
@@ -37,16 +48,16 @@ function Menu() {
                 quantity: currentCartItem.quantity + 1
             }
             // удалим старое
-            let newItems = cartItems.filter(cartItem => cartItem.itemId !== currentCartItem.itemId)
+            let newItems = cartItems.map(cartItem => cartItem.itemId === currentCartItem.itemId ? newCartItem : cartItem)
             // заменяем старый на новый
-            setCartItems([...newItems, newCartItem])
+            setCartItems(newItems)
         } else {
                 const newCartItem = {  // добавить впервые
                     ...item,
                     id: uuid4(),
                     itemId: item.id,
                     quantity: 1,
-                    restaurantId: item.id
+                    restaurantId: item.restaurantId
                 }
             setCartItems([...cartItems, newCartItem])
         }
@@ -55,18 +66,16 @@ function Menu() {
     const removeOrder = (item) => {   // уменьшение на 1 заказ из корзины
         const currentCartItem = findCartItem(item)  // проверить, есть ли item в корзине cartItems
             
-        if (currentCartItem) {   // изменить количество -1
+        if (currentCartItem.quantity > 1) {   // изменить количество -1
             const newCartItem = {
                 ...currentCartItem,
                 quantity: currentCartItem.quantity - 1
             }
             // удалим старое
-            let newItems = cartItems.filter(cartItem => cartItem.itemId !== currentCartItem.itemId)
+            let newItems = cartItems.map(cartItem => cartItem.itemId === currentCartItem.itemId ? newCartItem : cartItem)
             // заменяем старый элемент на новый
-            setCartItems([...newItems, newCartItem])
-        }
-
-        if (currentCartItem.quantity <= 1) {  // если количество меньше 1, то удалить товар из корзины
+            setCartItems(newItems)
+        } else {   // если количество меньше 1, то удалить товар из корзины
             let newItems = cartItems.filter(cartItem => cartItem.itemId !== currentCartItem.itemId)
             // заменяем старый на новый
             setCartItems(newItems)
@@ -111,7 +120,7 @@ function Menu() {
                                     {!findCartItem(item) ? (
                                     <button 
                                         className="p-3 w-full bg-yellow-400 text-xl rounded hover:bg-yellow-600 transition-all duration-3000"
-                                        onClick={() => addOrder(item)}
+                                        onClick={() => addOrder(item, item.restaurantId)}
                                     >
                                         Добавить в корзину
                                     </button>

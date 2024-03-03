@@ -1,17 +1,27 @@
 import { Dialog, Transition } from "@headlessui/react"
-import { Fragment, useState, useEffect } from "react"
+import { Fragment, useState } from "react"
 import Swal from "sweetalert2"
 
-function PostForm({ closeModalWindow, cartItems }) {
-    let [isOpen] = useState(true)
+function PostForm({ closeModalWindow, emptyTrash, cartItems, restaurantId }) {
 
     const [customerName, setCustomerName] = useState('')
     const [phone, setPhone] = useState('')
     const [email, setEmail] = useState('')
     const [description, setDescription] = useState('')
+    const [isOpen] = useState(true)
 
     const handleSubmitForm = (event) => {  // функция обрабатывает отправленную форму
         event.preventDefault() // предотвращаем загрузку страницы при отправлении формы 
+
+        if (customerName === '' || phone === '' || email === '') { // Условие на заполнение обязательных полей
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Заполните обязательные поля!',
+                showConfirmButton: true,
+            })
+            return
+        } 
 
         const requestBody = {
             customerName,
@@ -20,48 +30,40 @@ function PostForm({ closeModalWindow, cartItems }) {
             description,
             restaurantId,
 
-            cartItems: [
-                itemId,
-                quantity,
-                price 
-            ]
+            cartItems: cartItems.map((cartItem) => ({ 
+                itemId: cartItem.itemId,
+                quantity: cartItem.quantity,
+                price: cartItem.price 
+            }))  
         }
-    }
 
-    useEffect(() => {  // Отправка данных на сервер
-        fetch(`https://www.bit-by-bit.ru/api/student-projects/restaurants/order`)
-        .then(response => response.json())
-        .then(json => setCartItems(json))
-    }, [])
+        fetch(`https://www.bit-by-bit.ru/api/student-projects/restaurants/order`, {
+            method: 'POST',
+            body: JSON.stringify(requestBody)
+        }) 
 
-    {cartItems((cartItem) => (<pre key={cartItem.id}>
-            {JSON.stringify(cartItem)}
-        </pre>
-        ))
-    }
-  
-
-    if (response) {  // Сообщение при успешной отправке формы
-        Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Спасибо за обращение! Наш менеджер свяжется с Вами в течение 10 минут!',
-            showConfirmButton: false,
-            timer: 3000
+        .then(response => {
+            if (response.ok) {
+                closeModalWindow()
+                emptyTrash()
+                Swal.fire({  // Сообщение при успешной отправке формы
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Спасибо за обращение! Наш менеджер свяжется с Вами в течение 10 минут!',
+                    showConfirmButton: false,
+                    timer: 3000
+                })
+            } else {
+                Swal.fire({  // Сообщение при успешной отправке формы
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Упс... Что-то пошло не так! Попробуйте отправить заказ позднее!',
+                    showConfirmButton: false,
+                    timer: 3000
+                })
+            }
         })
     }
-        
-
-       
-    if (surname === '' || phone === '' || mail === '') { // Условие на заполнение обязательных полей
-        Swal.fire({
-            position: 'center',
-            icon: 'error',
-            title: 'Заполните обязательные поля!',
-            showConfirmButton: true,
-        })
-        return
-    } 
         
     return (
         <>
@@ -98,41 +100,41 @@ function PostForm({ closeModalWindow, cartItems }) {
                                     Для оформления заказа заполните все поля
                                 </Dialog.Title>
                                 
-                                <form className="flex flex-col gap-5 justify-between">
+                                <form onSubmit={handleSubmitForm} className="flex flex-col gap-5 justify-between">
                                     <input 
-                                        className="h-8 w-full border border-gray-500 rounded-xl"
+                                        className="p-2 h-8 w-full border border-gray-500 rounded-xl"
                                         placeholder="Введите Ваше имя"
                                         name="customerName"
                                         type="text"
                                         value={customerName}
-                                       // onChange={onChange}
+                                        onChange={(event) => setCustomerName(event.target.value)}
                                         />
 
                                     <input 
-                                        className="h-8 w-full border border-gray-500 rounded-xl"
+                                        className="p-2 h-8 w-full border border-gray-500 rounded-xl"
                                         placeholder="Введите номер телефона"
                                         name="phone"
                                         type="number"
                                         value={phone}
-                                       // onChange={onChange}
+                                        onChange={(event) => setPhone(event.target.value)}
                                         />
 
                                     <input 
-                                        className="h-8 w-full border border-gray-500 rounded-xl"
+                                        className="p-2 h-8 w-full border border-gray-500 rounded-xl"
                                         placeholder="Введите e-mail"
                                         name="email"
                                         type="text"
                                         value={email}
-                                      //  onChange={onChange}
+                                        onChange={(event) => setEmail(event.target.value)}
                                         />     
 
                                     <textarea
-                                        className="h-8 w-full border border-gray-500 rounded-xl"
+                                        className="p-2 h-8 w-full border border-gray-500 rounded-xl"
                                         placeholder="Комментарий:"
                                         name="email"
                                         type="text"
                                         value={description}
-                                      //  onChange={onChange}
+                                        onChange={(event) => setDescription(event.target.value)}
                                         >   
                                     </textarea>        
                                 
@@ -141,7 +143,6 @@ function PostForm({ closeModalWindow, cartItems }) {
                                         <button
                                             type="submit"
                                             className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-xl font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                            onClick={() => handleSubmitForm()}
                                         >
                                             Отправить заявку
                                         </button>

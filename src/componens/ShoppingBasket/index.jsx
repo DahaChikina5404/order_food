@@ -3,13 +3,13 @@ import { Link } from "react-router-dom"
 import { TrashIcon } from "@heroicons/react/24/outline"
 import PostForm  from "componens/PostForm"
 
-function ShoppingBasket() {
+function ShoppingBasket({ restaurants }) {
 
     const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem('cartItems')) || [])  // массив блюд, добавленных в корзину
     const [openModal, setOpenModal] = useState(false)  //  открытия окна для оформления заказа
     
     const summaOfOrders = () => {     // функция для подсчета общей суммы заказа
-        return cartItems.reduce((sum, cartItem) => sum + parseFloat(cartItem.price), 0)
+        return cartItems.reduce((sum, cartItem) => sum + parseFloat(cartItem.price) * cartItem.quantity, 0)
     }
 
     const plus = (cartItem) => {   // увеличение на 1
@@ -20,39 +20,30 @@ function ShoppingBasket() {
                 quantity: cartItem.quantity + 1
             }
             // удалим старое
-            let newItems = cartItems.filter(cartItem => cartItem.itemId !== newCartItem.itemId)
+            let newItems = cartItems.map(cartItem => cartItem.id === newCartItem.id ? newCartItem : cartItem)
             // заменяем старый на новый
-            setCartItems([...newItems, newCartItem])
+            setCartItems(newItems)
         }    
     }
 
     const minus = (cartItem) => {   // уменьшение на 1
        
-        if (cartItem) {   // изменить количество -1
+        if (cartItem.quantity > 1) {   // изменить количество -1
             const newCartItem = {
                 ...cartItem,
                 quantity: cartItem.quantity - 1
             }
             // удалим старое
-            let newItems = cartItems.filter(cartItem => cartItem.itemId !== newCartItem.itemId)
-            // заменяем старый элемент на новый
-            setCartItems([...newItems, newCartItem])
-        }
-
-        if (cartItem.quantity <= 1) {  // если количество меньше 1, то удалить товар из корзины
-            const newCartItem = {
-                ...cartItem
-            }
+            let newItems = cartItems.map(cartItem => cartItem.id === newCartItem.id ? newCartItem : cartItem)
+            // заменяем старый на новый
+            setCartItems(newItems)
+        } else {   // если количество меньше 1, то удалить товар из корзины
             // удалим старое
-            let newItems = cartItems.filter(cartItem => cartItem.itemId !== newCartItem.itemId)
+            let newItems = cartItems.filter(x => x.id !== cartItem.id)
             // заменяем старый на новый
             setCartItems(newItems)
         }
     }
-
-    // const summaOfOrder = (cartItem) => (
-    //     cartItem.quantity * parseFloat(cartItem.price)
-    // )
     
     const deleteOrderFromCart = (id) => {  // удалить заказ из корзины
         const filteredOrder = cartItems.filter(cartItem => cartItem.id !== id)
@@ -86,27 +77,26 @@ function ShoppingBasket() {
                 </div>    
             ) : (
                 <div>
-                    {openModal && <PostForm closeModalWindow={closeModalWindow} cartItems={cartItems}/>}
+                    {openModal && <PostForm closeModalWindow={closeModalWindow} emptyTrash={emptyTrash} restaurants={restaurants} cartItems={cartItems} restaurantId={cartItems.length > 0 ? cartItems[0].restaurantId : null} />}
                     <h2 className="my-12 text-center text-2xl md:text-4xl">Ваш заказ:</h2>
                     {cartItems.map((cartItem, index) => {
                         return (
-                            <div key={cartItem.id} className="w-full md:w-1/2 m-auto py-4 text-xl flex justify-between items-center">
-                                <div className="flex justify-between items-center gap-5">
+                            <div key={cartItem.id} className="w-full md:w-full lg:w-2/3 m-auto py-4 text-sm md:text-xl flex justify-between items-center">
+                                <div className="flex justify-between items-center gap-2 md:gap-6">
                                     <p>{index + 1}. </p>
                                     <img className="h-20 w-20 rounded-xl object-cover" src={cartItem.image} alt="блюдо"/>
-                                    <p>{cartItem.price} р.</p>
+                                    <p className="text-xs md:text-xl">{cartItem.name}</p>
+                                    <p className="text-red-700">{cartItem.price} р.</p>
                                 </div>
                                 
-                                <div className="flex justify-between items-center gap-5">
-                                    <button className="text-3xl" onClick={() => minus(cartItem)}> - </button>
+                                <div className="flex justify-between items-center gap-2 md:gap-5">
+                                    <button className="text-xl md:text-3xl" onClick={() => minus(cartItem)}> - </button>
                                     <p>{cartItem.quantity}</p>
-                                    <button className="text-3xl" onClick={() => plus(cartItem)}> + </button>
-                                    
-                                    {/* <p className="text-3xl text-justify">Сумма: {summaOfOrder()} р.</p> */}
+                                    <button className="text-xl md:text-3xl" onClick={() => plus(cartItem)}> + </button>
                                 </div>
 
                                 <button onClick={() => deleteOrderFromCart(cartItem.id)}>
-                                    <TrashIcon className="w-6 h-6 stroke-red-700" />
+                                    <TrashIcon className="w-4 md:w-6 w-4 md:h-6 stroke-red-700" />
                                 </button>
                             </div>
                         )
