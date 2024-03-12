@@ -1,13 +1,22 @@
 import { format } from "date-fns"
 import { ClockLoader } from "react-spinners"
 import { Link } from "react-router-dom"
+import { useState, useEffect } from "react"
 import { DevicePhoneMobileIcon, EnvelopeIcon, MapPinIcon } from "@heroicons/react/24/outline"
 import "./style.css"
 
-function HomePage({ restaurants }) {
+function HomePage() {
+
+    const [restaurants, setRestaurants] = useState([])   // МАССИВ ресторанов
+
+    useEffect(() => {  // Подгрузка данных с бэкенда
+        fetch(`https://www.bit-by-bit.ru/api/student-projects/restaurants`)
+        .then(response => response.json())
+        .then(data => setRestaurants(data))
+    }, [])
    
     return (
-        <div className="content">
+        <div className="content min-h-screen">
             {restaurants.length === 0 ? (
                 <ClockLoader
                     className="content"

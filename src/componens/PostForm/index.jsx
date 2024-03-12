@@ -102,7 +102,7 @@ function PostForm({ closeModalWindow, emptyTrash, cartItems, restaurantId }) {
                                 
                                 <form onSubmit={handleSubmitForm} className="flex flex-col gap-5 justify-between">
                                     <input 
-                                        className="p-2 h-8 w-full border border-gray-500 rounded-xl"
+                                        className="p-2 h-10 w-full border border-gray-500 rounded-xl"
                                         placeholder="Введите Ваше имя"
                                         name="customerName"
                                         type="text"
@@ -111,7 +111,7 @@ function PostForm({ closeModalWindow, emptyTrash, cartItems, restaurantId }) {
                                         />
 
                                     <input 
-                                        className="p-2 h-8 w-full border border-gray-500 rounded-xl"
+                                        className="p-2 h-10 w-full border border-gray-500 rounded-xl"
                                         placeholder="Введите номер телефона"
                                         name="phone"
                                         type="number"
@@ -120,7 +120,7 @@ function PostForm({ closeModalWindow, emptyTrash, cartItems, restaurantId }) {
                                         />
 
                                     <input 
-                                        className="p-2 h-8 w-full border border-gray-500 rounded-xl"
+                                        className="p-2 h-10 w-full border border-gray-500 rounded-xl"
                                         placeholder="Введите e-mail"
                                         name="email"
                                         type="text"
@@ -129,7 +129,7 @@ function PostForm({ closeModalWindow, emptyTrash, cartItems, restaurantId }) {
                                         />     
 
                                     <textarea
-                                        className="p-2 h-8 w-full border border-gray-500 rounded-xl"
+                                        className="p-2 h-10 w-full border border-gray-500 rounded-xl"
                                         placeholder="Комментарий:"
                                         name="email"
                                         type="text"
@@ -142,14 +142,14 @@ function PostForm({ closeModalWindow, emptyTrash, cartItems, restaurantId }) {
                                     <div className="mt-4 flex justify-start items-center gap-2">
                                         <button
                                             type="submit"
-                                            className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-xl font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                            className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm md:text-xl font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                                         >
                                             Отправить заявку
                                         </button>
 
                                         <button
                                             type="button"
-                                            className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-xl font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                            className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm md:text-xl font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                                             onClick={closeModalWindow}
                                         >
                                             Отмена

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { TrashIcon } from "@heroicons/react/24/outline"
 import PostForm  from "componens/PostForm"
 
-function ShoppingBasket({ restaurants }) {
+function ShoppingBasket() {
 
     const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem('cartItems')) || [])  // массив блюд, добавленных в корзину
     const [openModal, setOpenModal] = useState(false)  //  открытия окна для оформления заказа
@@ -67,7 +67,7 @@ function ShoppingBasket({ restaurants }) {
 	}, [cartItems])
 
     return (
-        <div className="content">
+        <div className="content min-h-screen">
             {cartItems.length === 0 ? (
                 <div className="mt-20 text-center text-3xl md:text-6xl text-gray-400 font-thin">
                     <p>Ваша корзина пуста!</p>
@@ -77,27 +77,30 @@ function ShoppingBasket({ restaurants }) {
                 </div>    
             ) : (
                 <div>
-                    {openModal && <PostForm closeModalWindow={closeModalWindow} emptyTrash={emptyTrash} restaurants={restaurants} cartItems={cartItems} restaurantId={cartItems.length > 0 ? cartItems[0].restaurantId : null} />}
+                    {openModal && <PostForm closeModalWindow={closeModalWindow} emptyTrash={emptyTrash} cartItems={cartItems} restaurantId={cartItems.length > 0 ? cartItems[0].restaurantId : null} />}
                     <h2 className="my-12 text-center text-2xl md:text-4xl">Ваш заказ:</h2>
                     {cartItems.map((cartItem, index) => {
                         return (
-                            <div key={cartItem.id} className="w-full md:w-full lg:w-2/3 m-auto py-4 text-sm md:text-xl flex justify-between items-center">
+                            <div key={cartItem.id} className="w-full md:w-full lg:w-2/3 m-auto py-4 flex justify-between items-center text-xs md:text-xl">
                                 <div className="flex justify-between items-center gap-2 md:gap-6">
                                     <p>{index + 1}. </p>
-                                    <img className="h-20 w-20 rounded-xl object-cover" src={cartItem.image} alt="блюдо"/>
-                                    <p className="text-xs md:text-xl">{cartItem.name}</p>
-                                    <p className="text-red-700">{cartItem.price} р.</p>
-                                </div>
-                                
-                                <div className="flex justify-between items-center gap-2 md:gap-5">
-                                    <button className="text-xl md:text-3xl" onClick={() => minus(cartItem)}> - </button>
-                                    <p>{cartItem.quantity}</p>
-                                    <button className="text-xl md:text-3xl" onClick={() => plus(cartItem)}> + </button>
+                                    <img className="h-20 md:h-40 w-20 md:w-40 rounded-xl object-cover" src={cartItem.image} alt="блюдо"/>
+                                    <div className="flex flex-col items-start">
+                                        <p className="py-1 text-xs md:text-xl">{cartItem.name}</p>
+                                        <div className="pl-5 flex justify-around items-center gap-2 md:gap-5">
+                                            <button className="text-xl md:text-3xl" onClick={() => minus(cartItem)}> - </button>
+                                            <p>{cartItem.quantity}</p>
+                                            <button className="text-xl md:text-3xl" onClick={() => plus(cartItem)}> + </button>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <button onClick={() => deleteOrderFromCart(cartItem.id)}>
-                                    <TrashIcon className="w-4 md:w-6 w-4 md:h-6 stroke-red-700" />
-                                </button>
+                                <div className="flex justify-between items-center gap-2 md:gap-10">
+                                    <p className="text-xs md:text-xl">{cartItem.price} р.</p>
+                                    <button onClick={() => deleteOrderFromCart(cartItem.id)}>
+                                        <TrashIcon className="w-4 md:w-6 w-4 md:h-6 stroke-red-700" />
+                                    </button>
+                                </div>
                             </div>
                         )
                     })}
@@ -117,7 +120,7 @@ function ShoppingBasket({ restaurants }) {
 
                     <div className="mt-7 text-right">
                         <button 
-                            className="p-3 w-1/2 lg:w-1/5 md:w-1/3 text-xl border border-gray-500 rounded hover:bg-yellow-400 transition-all duration-3000"
+                            className="p-2 md:p-3 w-1/2 lg:w-1/5 md:w-1/3 text-sm md:text-xl border border-gray-500 rounded hover:bg-yellow-400 transition-all duration-3000"
                             onClick={() => emptyTrash()}
                         >
                             Очистить корзину

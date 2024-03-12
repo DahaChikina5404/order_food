@@ -96,7 +96,7 @@ function Menu() {
     }
 
     return (
-        <div className="content">
+        <div className="content min-h-screen">
             {items.length === 0 ? (
                 <ClockLoader
                     className="content"
@@ -126,10 +126,10 @@ function Menu() {
                                     </button>
                                     ) : (
                                         findCartItem(item) && 
-                                        <div className="my-5 flex justify-around items-center gap-1">
-                                            <button className="text-6xl" onClick={() => removeOrder(item)}> - </button>
+                                        <div className="my-2 flex justify-around items-center gap-1">
+                                            <button className="text-3xl" onClick={() => removeOrder(item)}> - </button>
                                             <p className="text-3xl">{findCartItem(item).quantity}</p>
-                                            <button className="text-6xl" onClick={() => addOrder(item)}> + </button>
+                                            <button className="text-3xl" onClick={() => addOrder(item)}> + </button>
                                         </div>
                                         )   
                                     }
